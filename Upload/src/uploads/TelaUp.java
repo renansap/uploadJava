@@ -167,7 +167,8 @@ public class TelaUp extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         System.out.println("Entrou ak");
-        String caminho = getClass().getResource("../imagens/").toString().substring(5);
+//        String caminho = getClass().getResource("../imagens/").toString().substring(10);
+        String caminho = ("C:\\Users\\Ksa\\Documents\\NetBeansProjects\\uploadJava\\Upload\\src\\imegens\\");
         File outputfile = new File(caminho);
         System.out.println("Caminho" + caminho);
         String nameArquivo = outputfile.getName();
@@ -178,6 +179,8 @@ public class TelaUp extends javax.swing.JFrame {
         File arquivo = new File(caminho + arq.getName());
         try {
             arquivo.createNewFile();
+            
+            System.out.println("Arquivo criado");
             //arquivo
         } catch (IOException ex) {
             Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
