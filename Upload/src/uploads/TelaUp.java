@@ -5,8 +5,16 @@
  */
 package uploads;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -179,8 +187,38 @@ public class TelaUp extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
         }
+        try {
+            Socket socket = new Socket("127.0.0.1", 4001);    
+            System.out.println("O cliente se conectou ao servidor!");
+            //DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            //DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            long lenght = outputfile.length();
+            if (lenght >  4096) {
+                System.out.println("Arquivo muito grande!");    
+            }
 
-            // JOptionPane.showMessageDialog(rootPane, "Imagem enviada com sucesso");
+            byte[] bytes = new byte[4096]; // or 4096, or more
+            InputStream in = new FileInputStream(arquivo);
+            OutputStream out = socket.getOutputStream();
+
+            int count;
+            
+            
+            while ((count = in.read(bytes)) > 0)
+            {
+                out.write(bytes, 0, count);
+            }
+            
+            out.close();
+            in.close();
+            socket.close();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        
+        // JOptionPane.showMessageDialog(rootPane, "Imagem enviada com sucesso");
 
     }//GEN-LAST:event_btnEnviarActionPerformed
 
