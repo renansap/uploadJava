@@ -174,12 +174,12 @@ public class TelaUp extends javax.swing.JFrame {
         String nameArquivo = outputfile.getName();
 
         System.out.println("Entrou 2 " + nameArquivo);
-        System.out.println("gggggggg "+ arq.getName());
-        System.out.println("Caminho: "+ caminho);
+        System.out.println("gggggggg " + arq.getName());
+        System.out.println("Caminho: " + caminho);
         File arquivo = new File(caminho + arq.getName());
         try {
             arquivo.createNewFile();
-            
+
             System.out.println("Arquivo criado");
             //arquivo
         } catch (IOException ex) {
@@ -196,32 +196,41 @@ public class TelaUp extends javax.swing.JFrame {
             Socket socketNo1 = new Socket("127.0.0.1", 4001);
             System.out.println("O cliente se conectou ao servidorNo1!");
 
-//            Socket socketNo2 = new Socket("127.0.0.1", 4002);
-//            System.out.println("O cliente se conectou ao servidorNo2!");
-//
-//            Socket socketNo3 = new Socket("127.0.0.1", 4003);
-//            System.out.println("O cliente se conectou ao servidorNo3!");
-//
-//            Socket socketNo4 = new Socket("127.0.0.1", 4004);
-//            System.out.println("O cliente se conectou ao servidorNo3!");
-            
-            
-            long lenght = outputfile.length();
-            if (lenght > 4096) {
+            Socket socketNo2 = new Socket("127.0.0.1", 4002);
+            System.out.println("O cliente se conectou ao servidorNo2!");
+
+            Socket socketNo3 = new Socket("127.0.0.1", 4003);
+            System.out.println("O cliente se conectou ao servidorNo3!");
+
+            Socket socketNo4 = new Socket("127.0.0.1", 4004);
+            System.out.println("O cliente se conectou ao servidorNo4!");
+
+            long lenght = arq.length();
+            if (lenght / 1024 > 4096) {
                 System.out.println("Arquivo muito grande!");
             }
-
-            byte[] bytes = new byte[4096]; // or 4096, or more
-            InputStream in = new FileInputStream(arquivo);
-            OutputStream out = socketNo1.getOutputStream();
+            System.out.println(lenght);
+            byte[] bytes = new byte[16 * 1024]; // or 4096, or more
+            InputStream in = new FileInputStream(arq);
+            OutputStream out1 = socketNo1.getOutputStream();
+            OutputStream out2 = socketNo2.getOutputStream();
+            OutputStream out3 = socketNo3.getOutputStream();
+            OutputStream out4 = socketNo4.getOutputStream();
 
             int count;
 
             while ((count = in.read(bytes)) > 0) {
-                out.write(bytes, 0, count);
+                out1.write(bytes, 0, count);
+                out2.write(bytes, 0, count);
+                out3.write(bytes, 0, count);
+                out4.write(bytes, 0, count);
+
             }
 
-            out.close();
+            out1.close();
+            out2.close();
+            out3.close();
+            out4.close();
             in.close();
             socketNo1.close();
 
@@ -258,7 +267,8 @@ public class TelaUp extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
 
-        String caminho = getClass().getResource("../imagens/").toString().substring(5);
+//        String caminho = getClass().getResource("../imagens/").toString().substring(5);
+        String caminho = ("C:\\Users\\Ksa\\Documents\\NetBeansProjects\\uploadJava\\Upload\\src\\imegens\\");
 
         File busca = new File(caminho);
         String listaD = "";
@@ -272,13 +282,11 @@ public class TelaUp extends javax.swing.JFrame {
 
             listaD += arquivos + "\r\n";
 
-//            //int qnt = busca.listFiles().length;
-//            for ( i=0; i <= busca.listFiles().length ; i++){
-//                
-//               
-            System.out.println(arquivos);
-//                
-//            }
+            //int qnt = busca.listFiles().length;
+            for (i = 0; i <= busca.listFiles().length; i++) {
+
+            //System.out.println(arquivos);
+            }
 
         }
         txtbusca.setText(listaD);
