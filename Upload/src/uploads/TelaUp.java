@@ -172,8 +172,9 @@ public class TelaUp extends javax.swing.JFrame {
         System.out.println("Caminho" + caminho);
         String nameArquivo = outputfile.getName();
 
-        //System.out.println("Entrou 2 " + nameArquivo);
-        //System.out.println("gggggggg "+ arq.getName());
+        System.out.println("Entrou 2 " + nameArquivo);
+        System.out.println("gggggggg "+ arq.getName());
+        System.out.println("Caminho: "+ caminho);
         File arquivo = new File(caminho + arq.getName());
         try {
             arquivo.createNewFile();
@@ -187,37 +188,44 @@ public class TelaUp extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         try {
-            Socket socket = new Socket("127.0.0.1", 4001);    
-            System.out.println("O cliente se conectou ao servidor!");
-            //DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            //DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            Socket socketNo1 = new Socket("127.0.0.1", 4001);
+            System.out.println("O cliente se conectou ao servidorNo1!");
+
+//            Socket socketNo2 = new Socket("127.0.0.1", 4002);
+//            System.out.println("O cliente se conectou ao servidorNo2!");
+//
+//            Socket socketNo3 = new Socket("127.0.0.1", 4003);
+//            System.out.println("O cliente se conectou ao servidorNo3!");
+//
+//            Socket socketNo4 = new Socket("127.0.0.1", 4004);
+//            System.out.println("O cliente se conectou ao servidorNo3!");
+            
+            
             long lenght = outputfile.length();
-            if (lenght >  4096) {
-                System.out.println("Arquivo muito grande!");    
+            if (lenght > 4096) {
+                System.out.println("Arquivo muito grande!");
             }
 
             byte[] bytes = new byte[4096]; // or 4096, or more
             InputStream in = new FileInputStream(arquivo);
-            OutputStream out = socket.getOutputStream();
+            OutputStream out = socketNo1.getOutputStream();
 
             int count;
-            
-            
-            while ((count = in.read(bytes)) > 0)
-            {
+
+            while ((count = in.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
             }
-            
+
             out.close();
             in.close();
-            socket.close();
-            
+            socketNo1.close();
+
         } catch (IOException ex) {
             Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
         // JOptionPane.showMessageDialog(rootPane, "Imagem enviada com sucesso");
 
     }//GEN-LAST:event_btnEnviarActionPerformed
@@ -235,7 +243,7 @@ public class TelaUp extends javax.swing.JFrame {
         File arquivo = selArquivo.getSelectedFile();
         arq = arquivo;
         txtProcurar.setText(arquivo.getPath()); // coloca caminho do arquivo.
-        System.out.println("TETSTETSTE " + arquivo.getName());
+        System.out.println("TESTE: " + arquivo.getName());
 
     }//GEN-LAST:event_selAquivoActionPerformed
 
@@ -246,38 +254,33 @@ public class TelaUp extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
-        
+
         String caminho = getClass().getResource("../imagens/").toString().substring(5);
-        
-        File busca = new File (caminho);
-           String listaD = "";
+
+        File busca = new File(caminho);
+        String listaD = "";
         String[] list = busca.list();
-        for(String arquivos: list){
-            
+        for (String arquivos : list) {
+
             //System.out.println(arquivos);
-            
             //System.out.print("lisfiles"+busca.listFiles() );
             int i;
             //System.out.print("teste chritian "+ busca.getParent());
-         
-            listaD+=arquivos+"\r\n";
-            
+
+            listaD += arquivos + "\r\n";
+
 //            //int qnt = busca.listFiles().length;
 //            for ( i=0; i <= busca.listFiles().length ; i++){
 //                
 //               
-                System.out.println(arquivos);
+            System.out.println(arquivos);
 //                
 //            }
-          
-            
-            
-            
-            
+
         }
-           txtbusca.setText(listaD);
-            System.out.println("listaD"+ listaD);
-        
+        txtbusca.setText(listaD);
+        System.out.println("listaD" + listaD);
+
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtbuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbuscaActionPerformed
@@ -292,7 +295,7 @@ public class TelaUp extends javax.swing.JFrame {
 //     
 //   
 //   }
-        
+
 // TODO add your handling code here:
     }//GEN-LAST:event_txtbuscaActionPerformed
 
