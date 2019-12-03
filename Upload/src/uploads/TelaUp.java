@@ -220,6 +220,7 @@ public class TelaUp extends javax.swing.JFrame {
             int count;
 
             while ((count = in.read(bytes)) > 0) {
+                System.out.println(count);
                 out1.write(bytes, 0, count);
                 out2.write(bytes, 0, count);
                 out3.write(bytes, 0, count);
