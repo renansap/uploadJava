@@ -11,6 +11,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -168,7 +169,7 @@ public class TelaUp extends javax.swing.JFrame {
 
         System.out.println("Entrou ak");
 //        String caminho = getClass().getResource("../imagens/").toString().substring(10);
-        String caminho = ("C:\\Users\\Ksa\\Documents\\NetBeansProjects\\uploadJava\\Upload\\src\\imegens\\");
+        String caminho = ("C:\\Users\\igor.amaral\\Documents\\NetBeansProjects\\arquivos");
         File outputfile = new File(caminho);
         System.out.println("Caminho" + caminho);
         String nameArquivo = outputfile.getName();
@@ -210,22 +211,53 @@ public class TelaUp extends javax.swing.JFrame {
                 System.out.println("Arquivo muito grande!");
             }
             System.out.println(lenght);
-            byte[] bytes = new byte[16 * 1024]; // or 4096, or more
+            byte[] bytes = new byte[1024 * 1024];// 1MB
             InputStream in = new FileInputStream(arq);
             OutputStream out1 = socketNo1.getOutputStream();
             OutputStream out2 = socketNo2.getOutputStream();
             OutputStream out3 = socketNo3.getOutputStream();
             OutputStream out4 = socketNo4.getOutputStream();
-
+            int partCounter = 0;
             int count;
+            
+//            while ((count = in.read(bytes)) > 0) {;
+//                out1.write(bytes, 0, count);
+//                out2.write(bytes, 0, count);
+//                out3.write(bytes, 0, count);
+//                out4.write(bytes, 0, count);
+//
+//            }
+            OutputStream[] outs;
+            outs = new OutputStream[5];
+            outs[0] = out1;
+            outs[1] = out2;
+            outs[2] = out3;
+            outs[3] = out4;
+            
+            System.out.println(outs[0]);
+            String fileName = arq.getName();
+            System.out.println("filename");
+            System.out.println(fileName);
+            
+            
+            try (FileInputStream fis = new FileInputStream(arq);
+                 BufferedInputStream bis = new BufferedInputStream(fis)) {
 
-            while ((count = in.read(bytes)) > 0) {
-                out1.write(bytes, 0, count);
-                out2.write(bytes, 0, count);
-                out3.write(bytes, 0, count);
-                out4.write(bytes, 0, count);
-
-            }
+                int bytesAmount = 0;
+                while ((bytesAmount = bis.read(bytes)) > 0) {
+                    //write each chunk of data into separate file with different number in name
+                    String filePartName = String.format("%s.%03d", fileName, partCounter++);
+                    File newFile = new File(arq.getParent(), filePartName);
+                    try (FileOutputStream out = new FileOutputStream(newFile)) {
+                        System.out.println(partCounter);
+                        //manda cada parte de 1mb para os servidores, se o arquivo for menor que 1, manda só para o primeiro
+                        outs[partCounter-1].write(bytes, 0, bytesAmount);
+                        //splita o arquivo e grava no mesmo local em partes
+                        out.write(bytes, 0, bytesAmount);
+                    }
+                }
+            }            
+            
 
             out1.close();
             out2.close();
