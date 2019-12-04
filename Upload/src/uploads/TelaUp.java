@@ -60,6 +60,11 @@ public class TelaUp extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnEnviar.setText("Enviar");
+        btnEnviar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnEnviarMousePressed(evt);
+            }
+        });
         btnEnviar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEnviarActionPerformed(evt);
@@ -167,32 +172,34 @@ public class TelaUp extends javax.swing.JFrame {
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
         // TODO add your handling code here:
 
-        System.out.println("Entrou ak");
-//        String caminho = getClass().getResource("../imagens/").toString().substring(10);
-        String caminho = ("C:\\Users\\igor.amaral\\Documents\\NetBeansProjects\\arquivos");
-        File outputfile = new File(caminho);
-        System.out.println("Caminho" + caminho);
-        String nameArquivo = outputfile.getName();
-
-        System.out.println("Entrou 2 " + nameArquivo);
-        System.out.println("gggggggg " + arq.getName());
-        System.out.println("Caminho: " + caminho);
-        File arquivo = new File(caminho + arq.getName());
-        try {
-            arquivo.createNewFile();
-
-            System.out.println("Arquivo criado");
-            //arquivo
-        } catch (IOException ex) {
-            Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            outputfile.createNewFile();
-        } catch (IOException ex) {
-            Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+//        System.out.println("Entrou ak");
+////        String caminho = getClass().getResource("../imagens/").toString().substring(10);
+//        String caminho = ("C:\\Users\\Ksa\\Documents\\NetBeansProjects\\uploadJava\\Upload\\build\\classes\\imegens");
+//        
+//        //File outputfile = new File(caminho);
+//        
+//        System.out.println("Caminho " + caminho);
+//        //String nameArquivo = outputfile.getName();
+//
+//       // System.out.println("Entrou 2 " + nameArquivo);
+//        System.out.println("Nome do Arquivo: " + arq.getName());
+//        System.out.println("Caminho Salvar: " + caminho);
+        //      File arquivo = new File(caminho + arq.getName());
+//        try {
+//            arquivo.createNewFile();
+//            System.out.println("Arquivo criado");
+//            //arquivo
+//        } catch (IOException ex) {
+//            Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        //Verificar pq esta criando local
+//        try {
+//            
+//            System.out.println("Entrou no try");
+//            outputfile.createNewFile();
+//        } catch (IOException ex) {
+//            Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         try {
             Socket socketNo1 = new Socket("127.0.0.1", 4001);
             System.out.println("O cliente se conectou ao servidorNo1!");
@@ -208,9 +215,15 @@ public class TelaUp extends javax.swing.JFrame {
 
             long lenght = arq.length();
             if (lenght / 1024 > 4096) {
-                System.out.println("Arquivo muito grande!");
+                System.out.println("Tamanho " + lenght);
+                System.out.println("Arquivo muito grande1!");
+            } else {
+                System.out.println("Tamanho Aceitavel!");
+                //showOpenDialog(this);
+
             }
             System.out.println(lenght);
+            
             byte[] bytes = new byte[1024 * 1024];// 1MB
             InputStream in = new FileInputStream(arq);
             OutputStream out1 = socketNo1.getOutputStream();
@@ -219,7 +232,7 @@ public class TelaUp extends javax.swing.JFrame {
             OutputStream out4 = socketNo4.getOutputStream();
             int partCounter = 0;
             int count;
-            
+
 //            while ((count = in.read(bytes)) > 0) {;
 //                out1.write(bytes, 0, count);
 //                out2.write(bytes, 0, count);
@@ -233,15 +246,14 @@ public class TelaUp extends javax.swing.JFrame {
             outs[1] = out2;
             outs[2] = out3;
             outs[3] = out4;
-            
+
             System.out.println(outs[0]);
             String fileName = arq.getName();
             System.out.println("filename");
             System.out.println(fileName);
-            
-            
+
             try (FileInputStream fis = new FileInputStream(arq);
-                 BufferedInputStream bis = new BufferedInputStream(fis)) {
+                    BufferedInputStream bis = new BufferedInputStream(fis)) {
 
                 int bytesAmount = 0;
                 while ((bytesAmount = bis.read(bytes)) > 0) {
@@ -251,13 +263,12 @@ public class TelaUp extends javax.swing.JFrame {
                     try (FileOutputStream out = new FileOutputStream(newFile)) {
                         System.out.println(partCounter);
                         //manda cada parte de 1mb para os servidores, se o arquivo for menor que 1, manda só para o primeiro
-                        outs[partCounter-1].write(bytes, 0, bytesAmount);
+                        outs[partCounter - 1].write(bytes, 0, bytesAmount);
                         //splita o arquivo e grava no mesmo local em partes
                         out.write(bytes, 0, bytesAmount);
                     }
                 }
-            }            
-            
+            }
 
             out1.close();
             out2.close();
@@ -276,9 +287,18 @@ public class TelaUp extends javax.swing.JFrame {
 
     private void selAquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selAquivoActionPerformed
         // TODO add your handling code here:
+        
+        
         JFileChooser selArquivo = new JFileChooser();
         int res = selArquivo.showOpenDialog(null);
+        
         if (res == JFileChooser.APPROVE_OPTION) {
+            //selArquivo.getMaximumSize(4096)
+//            if (selArquivo.getMaximumSize(4096)< 4096){
+//            } else {
+//                
+//            }
+           
             JOptionPane.showMessageDialog(null, "Selecionado com Sucesso.");
 
         } else {
@@ -317,7 +337,7 @@ public class TelaUp extends javax.swing.JFrame {
             //int qnt = busca.listFiles().length;
             for (i = 0; i <= busca.listFiles().length; i++) {
 
-            //System.out.println(arquivos);
+                //System.out.println(arquivos);
             }
 
         }
@@ -341,6 +361,10 @@ public class TelaUp extends javax.swing.JFrame {
 
 // TODO add your handling code here:
     }//GEN-LAST:event_txtbuscaActionPerformed
+
+    private void btnEnviarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEnviarMousePressed
 
     /**
      * @param args the command line arguments
