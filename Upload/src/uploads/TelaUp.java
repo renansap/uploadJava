@@ -7,6 +7,7 @@ package uploads;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -251,7 +253,7 @@ public class TelaUp extends javax.swing.JFrame {
             String fileName = arq.getName();
             System.out.println("filename");
             System.out.println(fileName);
-
+            
             try (FileInputStream fis = new FileInputStream(arq);
                     BufferedInputStream bis = new BufferedInputStream(fis)) {
 
@@ -276,6 +278,9 @@ public class TelaUp extends javax.swing.JFrame {
             out4.close();
             in.close();
             socketNo1.close();
+            socketNo2.close();
+            socketNo3.close();
+            socketNo4.close();
 
         } catch (IOException ex) {
             Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
@@ -319,30 +324,96 @@ public class TelaUp extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
 
-//        String caminho = getClass().getResource("../imagens/").toString().substring(5);
-        String caminho = ("C:\\Users\\Ksa\\Documents\\NetBeansProjects\\uploadJava\\Upload\\src\\imegens\\");
-
-        File busca = new File(caminho);
-        String listaD = "";
-        String[] list = busca.list();
-        for (String arquivos : list) {
-
-            //System.out.println(arquivos);
-            //System.out.print("lisfiles"+busca.listFiles() );
-            int i;
-            //System.out.print("teste chritian "+ busca.getParent());
-
-            listaD += arquivos + "\r\n";
-
-            //int qnt = busca.listFiles().length;
-            for (i = 0; i <= busca.listFiles().length; i++) {
-
-                //System.out.println(arquivos);
-            }
-
+        Socket socketNo1 = null;
+        Socket socketNo2 = null;
+        Socket socketNo3 = null;
+        Socket socketNo4 = null;
+        
+        
+        try {
+            socketNo1 = new Socket("127.0.0.1", 4001);
+            System.out.println("O cliente se conectou ao servidorNo1!");
+            socketNo2 = new Socket("127.0.0.1", 4002);
+            System.out.println("O cliente se conectou ao servidorNo2!");
+            socketNo3 = new Socket("127.0.0.1", 4003);
+            System.out.println("O cliente se conectou ao servidorNo3!");
+            socketNo4 = new Socket("127.0.0.1", 4004);
+            System.out.println("O cliente se conectou ao servidorNo4!");
+        } catch (IOException ex) {
+            Logger.getLogger(TelaUp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        txtbusca.setText(listaD);
-        System.out.println("listaD" + listaD);
+        
+        
+        //System.out.println("O cliente se conectou ao servidorNo1!");
+        byte[] bytes = new byte[1024 * 4096];
+        try {
+            OutputStream out = null;
+            out = new FileOutputStream("C:\\Users\\igor.amaral\\Documents\\NetBeansProjects\\arquivos\\novo.png");
+            
+            //BufferedReader FromServer = new BufferedReader (new InputStreamReader(socketNo1.getInputStream()));
+            //DataOutputStream OutToClient = new DataOutputStream(soc_1.getOutputStream());            
+            //final DataInputStream InFromClient = new DataInputStream(socketNo1.getInputStream());
+            //final DataOutputStream ToServer = new DataOutputStream(socketNo1.getOutputStream());                    
+            final DataInputStream FromServer1 = new DataInputStream(socketNo1.getInputStream());
+            final DataOutputStream ToServer1 = new DataOutputStream(socketNo1.getOutputStream());            
+            final DataInputStream FromServer2 = new DataInputStream(socketNo2.getInputStream());
+            final DataOutputStream ToServer2 = new DataOutputStream(socketNo2.getOutputStream());                                
+            final DataInputStream FromServer3 = new DataInputStream(socketNo3.getInputStream());
+            final DataOutputStream ToServer3 = new DataOutputStream(socketNo3.getOutputStream());                                
+            final DataInputStream FromServer4 = new DataInputStream(socketNo4.getInputStream());
+            final DataOutputStream ToServer4 = new DataOutputStream(socketNo4.getOutputStream());                                
+            ToServer1.writeInt(1);
+            ToServer2.writeInt(1);
+            ToServer3.writeInt(1);
+            ToServer4.writeInt(1);
+            
+            OutputStream out1 = socketNo1.getOutputStream();
+            
+            int count;
+            while ((count = FromServer1.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+            }
+            while ((count = FromServer2.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+            }
+            while ((count = FromServer3.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+            }
+            while ((count = FromServer4.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+            }            
+            out.close();
+
+        } catch (Exception E ) {System.out.println(E);}
+
+        
+//        
+//        FileInputStream fis1 = new FileInputStream(busca1);
+//        BufferedInputStream bis1 = new BufferedInputStream(fis1);
+////        String caminho = getClass().getResource("../imagens/").toString().substring(5);
+//        String caminho = ("C:\\Users\\Ksa\\Documents\\NetBeansProjects\\uploadJava\\Upload\\src\\imegens\\");
+//
+//        File busca = new File(caminho);
+//        String listaD = "";
+//        String[] list = busca.list();
+//        for (String arquivos : list) {
+//
+//            //System.out.println(arquivos);
+//            //System.out.print("lisfiles"+busca.listFiles() );
+//            int i;
+//            //System.out.print("teste chritian "+ busca.getParent());
+//
+//            listaD += arquivos + "\r\n";
+//
+//            //int qnt = busca.listFiles().length;
+//            for (i = 0; i <= busca.listFiles().length; i++) {
+//
+//                //System.out.println(arquivos);
+//            }
+//
+//        }
+//        txtbusca.setText(listaD);
+//        System.out.println("listaD" + listaD);
 
     }//GEN-LAST:event_btnBuscarActionPerformed
 
